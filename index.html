@@ -1,0 +1,149 @@
+<html>
+  <head>
+    <!-- TAILWIND -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ANY CHART -->
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-circle-packing.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-data-adapter.min.js"></script>
+    <link
+      href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css"
+      type="text/css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css"
+      type="text/css"
+      rel="stylesheet"
+    />
+    <!-- JSON DATA -->
+    <script src="cities.json"></script>
+    <script src="verbs.json"></script>
+    <script>
+      fetch('verbs.json')
+        .then((res) => res.json())
+        .then((data) => console.log(data))
+    </script>
+
+    <!-- <style type="text/css">
+  
+      html,
+      body,
+      #container {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+  
+      .anychart-tooltip {
+        background: #fff;
+        color: #333;
+        border: 2px solid #333;
+        max-width: 500px;
+      }
+  
+      .anychart-tooltip-separator {
+        display: none;
+      }
+  
+      .anychart-tooltip-content {
+        display: grid;
+        grid-gap: 1rem;
+        grid-template: 'info image' auto;
+      }
+  
+      .anychart-tooltip-info {
+        grid-area: info;
+        min-width: 250px;
+      }
+  
+      .anychart-tooltip-info dt {
+        font-weight: bold;
+      }
+  
+      .anychart-tooltip img {
+        max-height: 300px;
+        grid-area: image;
+      }
+    
+  </style> -->
+  </head>
+  <body>
+    <div id="container"></div>
+
+    <script>
+      anychart.onDocumentReady(function () {
+        anychart.data.loadJsonFile(
+          'https://cdn.anychart.com/samples/circle-packing/imdb-top-250/data.json',
+          function (data) {
+            // set data tree from loaded data
+            var treeData = anychart.data.tree(data, 'as-table')
+
+            // create circle packing chart
+            var chart = anychart.circlePacking(treeData)
+
+            var numberFormatSettings = {
+              scale: true,
+              zeroFillDecimals: true,
+              scaleSuffixSeparator: '$',
+              decimalsCount: 2
+            }
+            chart
+              .tooltip()
+              .useHtml(true)
+              .format(function () {
+                var src = this.item.get('imgSrc')
+                if (src) {
+                  return (
+                    '<div class="anychart-tooltip-content"><div class="anychart-tooltip-info"><dl>' +
+                    '<dt>Title:</dt>' +
+                    '<dd>' +
+                    this.name +
+                    '</dd>' +
+                    '<dt>Year:</dt>' +
+                    '<dd>' +
+                    this.item.get('year') +
+                    '</dd>' +
+                    '<dt>Genre:</dt>' +
+                    '<dd>' +
+                    this.item.get('genre') +
+                    '</dd>' +
+                    '<dt>Runtime:</dt>' +
+                    '<dd>' +
+                    this.item.get('runtime') +
+                    '</dd>' +
+                    '<dt>Gross:</dt>' +
+                    '<dd>' +
+                    anychart.format.number(this.value, numberFormatSettings) +
+                    '</dd>' +
+                    '</dl><p>' +
+                    this.item.get('synopsis') +
+                    '</p></div><img src="' +
+                    src +
+                    '" /></div>'
+                  )
+                }
+                return this.name
+              })
+              .title({ enabled: false })
+
+            chart.background('#333')
+            chart.fill('#333')
+            chart.stroke(function () {
+              return {
+                thickness: 2,
+                color: this.sourceColor
+              }
+            })
+
+            chart.container('container')
+            chart.draw()
+          }
+        )
+      })
+    </script>
+  </body>
+</html>
