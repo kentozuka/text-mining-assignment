@@ -1373,6 +1373,5 @@
   "stockholm": { "travel": 1 },
   "hong-kong": { "travel": 1 },
   "ladakh": { "visit": 1 },
-  "prague": { "visit": 1 },
-  "undefined": { "undefined": null }
+  "prague": { "visit": 1 }
 }
